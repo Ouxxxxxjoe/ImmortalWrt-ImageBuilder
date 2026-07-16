@@ -85,8 +85,10 @@ fi
 if echo "$PACKAGES" | grep -q "luci-app-ssr-plus"; then
     echo "✅ 已选择 luci-app-ssr-plus，添加 mihomo core"
     mkdir -p files/usr/bin
-    # Download mihomo
-    MIHOMO_URL="https://github.com/MetaCubeX/mihomo/releases/download/v1.19.24/mihomo-linux-arm64-v1.19.24.gz"
+    # Download mihomo (动态拉取最新稳定版,避免内核版本硬编码过期)
+    MIHOMO_VER=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | grep '"tag_name"' | head -n1 | cut -d '"' -f4)
+    echo "mihomo 最新稳定版: $MIHOMO_VER"
+    MIHOMO_URL="https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_VER}/mihomo-linux-arm64-${MIHOMO_VER}.gz"
     mkdir -p files/usr/bin
     wget -qO- "$MIHOMO_URL" | gzip -dc > files/usr/bin/mihomo
     chmod +x files/usr/bin/mihomo
